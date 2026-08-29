@@ -33,23 +33,49 @@ export class MCPClient {
   }
 }
 
-import { pingAction } from "@/lib/server-actions/ping-action";
+import { searchHardwareSchema, evaluateRequirementsSchema, compareProductsSchema, rankCandidatesSchema, createProcurementListSchema, createQuoteRequestSchema } from "./mcp-schemas";
+import { searchHardwareAction } from "@/lib/server-actions/search-hardware-action";
+import { evaluateRequirementsAction } from "@/lib/server-actions/evaluate-requirements-action";
+import { compareProductsAction } from "@/lib/server-actions/compare-products-action";
+import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-action";
 
 export const mcpClient = new MCPClient({
   tools: [
     {
-      name: "ping_hardware",
-      description: "Dummy tool to verify WebMCP execution",
-      inputSchema: {
-        type: "object",
-        properties: {
-          echo: { type: "string" }
-        },
-        required: ["echo"]
-      },
-      handler: async (args: { echo: string }) => {
-        return pingAction(args);
-      }
+      name: "search_hardware",
+      description: "Search for hardware products",
+      inputSchema: searchHardwareSchema,
+      handler: async (args: any) => searchHardwareAction(args)
+    },
+    {
+      name: "evaluate_requirements",
+      description: "Evaluate products against requirements",
+      inputSchema: evaluateRequirementsSchema,
+      handler: async (args: any) => evaluateRequirementsAction(args.specs, args.products)
+    },
+    {
+      name: "compare_products",
+      description: "Compare selected hardware products",
+      inputSchema: compareProductsSchema,
+      handler: async (args: any) => compareProductsAction(args.productIds)
+    },
+    {
+      name: "rank_candidates",
+      description: "Rank hardware products based on human priorities",
+      inputSchema: rankCandidatesSchema,
+      handler: async (args: any) => rankCandidatesAction(args.products, args.priorities)
+    },
+    {
+      name: "create_procurement_list",
+      description: "Create an itemized procurement list",
+      inputSchema: createProcurementListSchema,
+      handler: async (args: any) => { return { status: "not_implemented_yet", args }; }
+    },
+    {
+      name: "create_quote_request",
+      description: "Create a draft request for quote",
+      inputSchema: createQuoteRequestSchema,
+      handler: async (args: any) => { return { status: "not_implemented_yet", args }; }
     }
   ]
 });
