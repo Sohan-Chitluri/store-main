@@ -1,75 +1,47 @@
-<a href="https://www.circuitparts.in">
-  <h1 align="center">Circuit Parts | Open-source, digital quote-to-order platform designed to streamline the sourcing of Embedded Electronic parts.</h1>
-</a>
+# HardwareScout (WebMCP Hackathon)
 
-<p align="center">
-  Buy Electronic & Semiconductor Components, Order PCB Fabrication and Assembly Services. All at one place.
-</p>
+HardwareScout is a WebMCP-native engineering procurement workspace, transformed from the original Circuit Parts ecommerce platform.
 
-<p align="center">
-  <a href="https://discord.gg/B4CCqBEH"><strong>Discord</strong></a> ·
-  <a href="https://www.circuitparts.in"><strong>Website</strong></a> ·
-  <a href="https://github.com/circuitparts/store/issues"><strong>Issues</strong></a> ·
-  <a href="https://circuitparts.in/roadmap"><strong>Roadmap</strong></a>
-</p>
+## Concept
 
-## About Circuit Parts
+Instead of a traditional B2C ecommerce storefront, HardwareScout acts as a collaborative, agent-driven workspace for hardware engineers. An AI agent (connected via MCP) can autonomously search for single-board computers (SBCs), evaluate them against strict engineering requirements, compare candidates, rank them by human priorities (e.g. price vs lead time), and generate automated Request For Quotes (RFQs).
 
-[Circuit Parts](https://www.circuitparts.in) was founded in 2022 to eliminate a major bottleneck in Hardware development: sourcing electronic and semiconductor parts for your project. The traditional process of finding, vetting, and managing suppliers, getting quotes, and tracking orders across many component distributors and PCB design houses is incredibly resource-intensive and prone to miscommunication, delays, and mistakes. These barriers make hardware development a slow, painful, high-risk endeavor.
+## WebMCP Architecture
 
-We engineered a new approach — A digital quote-to-order platform. It provides a convenient place for individuals and businesses to purchase electronic and semiconductor components, upload designs and receive instant quotes for PCB fabrication and assembly, all in one place, eliminating the need to navigate multiple websites.
+To reduce latency and deployment complexity, HardwareScout runs a **Browser-Native WebMCP Architecture**.
 
-[![CircuitParts](./public/images/screenshots/home.png)](https://circuitparts.in/)
+Instead of a separate Node.js MCP server, the tools are embedded directly into the Next.js application using Server Actions.
 
-## Why open source?
+```mermaid
+graph TD
+    A[Human Engineer] -->|Chat/UI| B(WebMCP Client Interface)
+    C[AI Agent] -->|Tool Execution| B
+    B -->|Tool: search_hardware| D[Next.js Server Action]
+    B -->|Tool: evaluate_requirements| E[Next.js Server Action]
+    B -->|Tool: rank_candidates| F[Next.js Server Action]
+    D -.-> G[(In-Memory Catalog)]
+    E -.-> G
+    F -.-> G
+    B -->|Trace Event| H[Redux Store]
+    H -->|Render| I[Visible Trace Panel]
+```
 
-Circuit Parts is an open source project. The code for Circuit Parts is available under MIT License. So the question is, why are we doing this?
+## Running the Application
 
-Read: [Why Circuit Parts is Open Source](https://www.circuitparts.in//contributors-guide/why-open-source) to understand our motivation behind making Circuit Parts open source.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
+3. Navigate to `http://localhost:3000/demo`.
 
-## Built with 🛠️
+## Running the Automated Demo
 
--   [Next.js](https://nextjs.org) - React framework for building performant apps.
--   [Clerk](https://clerk.com) - Handling user authentication.
--   [Tailwind CSS](https://tailwindcss.com) - CSS framework.
--   [MongoDB Atlas](https://www.mongodb.com/atlas/database) - Fully managed MongoDB in the cloud.
--   [Tailwind Headless UI](https://headlessui.com/) - Unstyled Headless UI components.
--   [shadcn/ui](https://ui.shadcn.com) - Pre-built Components Library
--   [Upstash](https://upstash.com/) - Serverless Redis for Caching.
--   [Amazon S3](https://aws.amazon.com/s3/) - Object storage.
--   [Formik](https://formik.org/) - Build forms in React.
--   [Yup](https://www.npmjs.com/package/yup) & [Zod](https://zod.dev/) - Schema builder for runtime value parsing and validation
--   [Resend](https://resend.com/) - Emailing service.
--   [Stripe](https://stripe.com) - Payments hanlding infrastucture.
--   [Playwright](https://playwright.dev/) - Reliable end-to-end testing for web apps.
--   [Vercel](https://vercel.com/) - Deploying nextjs apps.
+To demonstrate the full agent workflow without requiring a live LLM connection during the hackathon judging:
 
-## Documentation
-
-Head over to our [Docs](https://circuitparts.in/docs) page to view the full documentation.
-
-## Community
-
-The Circuit Parts developer community can be found on [GitHub Discussions](https://github.com/circuitparts/store/discussions) where you can ask questions, share ideas, and show case your contributions with other people.
-
-To chat with other community members you can join the [Circuit Parts Discord server]("https://discord.gg/B4CCqBEH").
-
-Do note that our [Code of Conduct](CODE_OF_CONDUCT.md) applies to all our community channels. Users are highly encouraged to read and adhere to them to avoid repercussions.
-
-## Stay Up-to-Date ⭐️
-
-Go ahead and hit the star button located at the top right of this page to keep track of the progress.
-
-![starring_ss](https://docs.github.com/assets/cb-8608/mw-1440/images/help/stars/starring-a-repository.webp)
-
-## Contributing
-
-Contributions to Circuit Parts are welcome and highly appreciated. However, before you jump right into it, we would like you to review our [Contribution Guidelines](https://www.circuitparts.in/contributors-guide/intro) to make sure you have a smooth experience contributing to this project.
-
-## Getting Started
-
-Head over to our [Docs](https://www.circuitparts.in/docs) page to find instructions on how to setup the project on your local machine and start tinkering. Happy coding!
-
-## Security
-
-Check out our [Security Policy](SECURITY.md) to understand how we handle security vulnerabilities.
+1. Go to the `/demo` page.
+2. Click the **Run Automated Demo (Agent Simulation)** button.
+3. Watch the Trace Panel at the bottom log the simulated agent tool calls (`search_hardware`, `evaluate_requirements`, etc.) and see the UI update dynamically via the Redux store.
