@@ -71,8 +71,11 @@ import { searchHardwareAction } from "@/lib/server-actions/search-hardware-actio
 import { evaluateRequirementsAction } from "@/lib/server-actions/evaluate-requirements-action";
 import { compareProductsAction } from "@/lib/server-actions/compare-products-action";
 import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-action";
+import { createProcurementListAction } from "@/lib/server-actions/create-procurement-list-action";
+import { createQuoteRequestAction } from "@/lib/server-actions/create-quote-request-action";
 import { reduxStore } from "@/lib/redux/store";
 import { setProducts, setEvaluation, setComparison } from "@/lib/redux/reducers/hardware-slice";
+import { setProcurementList, setRFQ } from "@/lib/redux/reducers/procurement-slice";
 import { addTraceEntry, updateTraceEntry } from "@/lib/redux/reducers/trace-panel-slice";
 
 export const mcpClient = new MCPClient({
@@ -122,13 +125,21 @@ export const mcpClient = new MCPClient({
       name: "create_procurement_list",
       description: "Create an itemized procurement list",
       inputSchema: createProcurementListSchema,
-      handler: async (args: any) => { return { status: "not_implemented_yet", args }; }
+      handler: async (args: any) => {
+        const result = await createProcurementListAction(args.name, args.products);
+        reduxStore.dispatch(setProcurementList(result));
+        return result;
+      }
     },
     {
       name: "create_quote_request",
       description: "Create a draft request for quote",
       inputSchema: createQuoteRequestSchema,
-      handler: async (args: any) => { return { status: "not_implemented_yet", args }; }
+      handler: async (args: any) => {
+        const result = await createQuoteRequestAction(args.listId);
+        reduxStore.dispatch(setRFQ(result));
+        return result;
+      }
     }
   ]
 });
