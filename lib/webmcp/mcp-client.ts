@@ -38,6 +38,8 @@ import { searchHardwareAction } from "@/lib/server-actions/search-hardware-actio
 import { evaluateRequirementsAction } from "@/lib/server-actions/evaluate-requirements-action";
 import { compareProductsAction } from "@/lib/server-actions/compare-products-action";
 import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-action";
+import { reduxStore } from "@/lib/redux/store";
+import { setProducts, setEvaluation, setComparison } from "@/lib/redux/reducers/hardware-slice";
 
 export const mcpClient = new MCPClient({
   tools: [
@@ -45,25 +47,42 @@ export const mcpClient = new MCPClient({
       name: "search_hardware",
       description: "Search for hardware products",
       inputSchema: searchHardwareSchema,
-      handler: async (args: any) => searchHardwareAction(args)
+      handler: async (args: any) => {
+        const result = await searchHardwareAction(args);
+        reduxStore.dispatch(setProducts(result));
+        return result;
+      }
     },
     {
       name: "evaluate_requirements",
       description: "Evaluate products against requirements",
       inputSchema: evaluateRequirementsSchema,
-      handler: async (args: any) => evaluateRequirementsAction(args.specs, args.products)
+      handler: async (args: any) => {
+        const result = await evaluateRequirementsAction(args.specs, args.products);
+        reduxStore.dispatch(setEvaluation(result));
+        return result;
+      }
     },
     {
       name: "compare_products",
       description: "Compare selected hardware products",
       inputSchema: compareProductsSchema,
-      handler: async (args: any) => compareProductsAction(args.productIds)
+      handler: async (args: any) => {
+        const result = await compareProductsAction(args.productIds);
+        reduxStore.dispatch(setComparison(result));
+        return result;
+      }
     },
     {
       name: "rank_candidates",
       description: "Rank hardware products based on human priorities",
       inputSchema: rankCandidatesSchema,
-      handler: async (args: any) => rankCandidatesAction(args.products, args.priorities)
+      handler: async (args: any) => {
+        const result = await rankCandidatesAction(args.products, args.priorities);
+        // Ranking typically updates the candidate list order
+        reduxStore.dispatch(setProducts(result));
+        return result;
+      }
     },
     {
       name: "create_procurement_list",
