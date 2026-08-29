@@ -29,7 +29,40 @@ export class MCPClient {
     if (!tool) {
       throw new Error(`Tool ${name} not found`);
     }
-    return tool.handler(args);
+
+    const traceId = crypto.randomUUID();
+    const startTime = Date.now();
+
+    reduxStore.dispatch(addTraceEntry({
+      id: traceId,
+      toolName: name,
+      args,
+      status: "pending",
+      timestamp: startTime,
+    }));
+
+    try {
+      const result = await tool.handler(args);
+      const duration = Date.now() - startTime;
+      
+      reduxStore.dispatch(updateTraceEntry({
+        id: traceId,
+        status: "success",
+        result,
+        duration,
+      }));
+      
+      return result;
+    } catch (error: any) {
+      const duration = Date.now() - startTime;
+      reduxStore.dispatch(updateTraceEntry({
+        id: traceId,
+        status: "error",
+        result: error.message || "Unknown error",
+        duration,
+      }));
+      throw error;
+    }
   }
 }
 
@@ -40,6 +73,7 @@ import { compareProductsAction } from "@/lib/server-actions/compare-products-act
 import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-action";
 import { reduxStore } from "@/lib/redux/store";
 import { setProducts, setEvaluation, setComparison } from "@/lib/redux/reducers/hardware-slice";
+import { addTraceEntry, updateTraceEntry } from "@/lib/redux/reducers/trace-panel-slice";
 
 export const mcpClient = new MCPClient({
   tools: [
