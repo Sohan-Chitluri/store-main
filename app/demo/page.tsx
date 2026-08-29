@@ -2,6 +2,8 @@ import { SearchHardwareForm } from "@/components/demo/search-hardware-form";
 import { HardwareResultsTable } from "@/components/demo/hardware-results-table";
 import { EvaluationPanel } from "@/components/demo/evaluation-panel";
 import { ComparisonMatrix } from "@/components/demo/comparison-matrix";
+import { TracePanel } from "@/components/demo/trace-panel";
+import { ProcurementSidebar } from "@/components/demo/procurement-sidebar";
 
 export default function DemoPage() {
   return (
@@ -39,14 +41,14 @@ export default function DemoPage() {
 
           <section id="procurement-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Procurement List</h2>
-            <div className="text-sm text-muted-foreground italic">Procurement sidebar placeholder</div>
+            <ProcurementSidebar />
           </section>
         </div>
       </div>
 
       <section id="trace-panel-section" className="border rounded-lg p-6 bg-slate-50 dark:bg-slate-900 mt-8 shadow-sm">
         <h2 className="text-xl font-semibold mb-4">WebMCP Trace</h2>
-        <div className="text-sm text-muted-foreground italic">Trace panel placeholder</div>
+        <TracePanel />
       </section>
     </div>
   );
