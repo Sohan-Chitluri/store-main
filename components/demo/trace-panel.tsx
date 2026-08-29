@@ -52,12 +52,12 @@ export function TracePanel() {
                 <div className="bg-slate-100 dark:bg-slate-800 rounded p-2 text-xs overflow-x-auto space-y-2 mt-2">
                   <div>
                     <span className="text-blue-600 dark:text-blue-400 font-bold">ARGS:</span> 
-                    <pre>{JSON.stringify(entry.args, null, 2)}</pre>
+                    <pre className="max-h-[150px] overflow-auto border-l-2 border-blue-500 pl-2 mt-1">{JSON.stringify(entry.args, null, 2)}</pre>
                   </div>
                   {entry.result && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-2">
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-2 mt-2">
                       <span className="text-green-600 dark:text-green-400 font-bold">RESULT:</span> 
-                      <pre>{JSON.stringify(entry.result, null, 2)}</pre>
+                      <pre className="max-h-[150px] overflow-auto border-l-2 border-green-500 pl-2 mt-1">{JSON.stringify(entry.result, null, 2)}</pre>
                     </div>
                   )}
                 </div>

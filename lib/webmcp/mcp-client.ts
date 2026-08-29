@@ -74,7 +74,7 @@ import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-actio
 import { createProcurementListAction } from "@/lib/server-actions/create-procurement-list-action";
 import { createQuoteRequestAction } from "@/lib/server-actions/create-quote-request-action";
 import { reduxStore } from "@/lib/redux/store";
-import { setProducts, setEvaluation, setComparison } from "@/lib/redux/reducers/hardware-slice";
+import { setProducts, setEvaluation, setComparison, setPriorities } from "@/lib/redux/reducers/hardware-slice";
 import { setProcurementList, setRFQ } from "@/lib/redux/reducers/procurement-slice";
 import { addTraceEntry, updateTraceEntry } from "@/lib/redux/reducers/trace-panel-slice";
 
@@ -118,6 +118,7 @@ export const mcpClient = new MCPClient({
         const result = await rankCandidatesAction(args.products, args.priorities);
         // Ranking typically updates the candidate list order
         reduxStore.dispatch(setProducts(result));
+        reduxStore.dispatch(setPriorities(args.priorities));
         return result;
       }
     },

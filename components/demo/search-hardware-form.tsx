@@ -49,15 +49,22 @@ export function SearchHardwareForm() {
       // 4. Rank Candidates
       const ranked = await mcpClient.executeTool("rank_candidates", {
         products: evalResult.compatible,
-        priorities: { price: 2, ram: 1, ecosystem: 1, lead_time: 1 }
+        priorities: { price: 3, ram: 1, ecosystem: 1, lead_time: 2 }
+      });
+      await sleep(2000);
+
+      // HUMAN INTERVENTION
+      const reranked = await mcpClient.executeTool("rank_candidates", {
+        products: evalResult.compatible,
+        priorities: { ecosystem: 3, ram: 2, price: 1, lead_time: 1 }
       });
       await sleep(1500);
 
-      if (ranked.length > 0) {
+      if (reranked.length > 0) {
         // 5. Create Procurement List
         const list = await mcpClient.executeTool("create_procurement_list", {
           name: "Project Alpha Hardware",
-          products: [{ productId: ranked[0].id, quantity: 10 }]
+          products: [{ productId: reranked[0].id, quantity: 10 }]
         });
         await sleep(1500);
 

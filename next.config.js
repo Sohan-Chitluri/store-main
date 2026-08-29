@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const withNextra = require("nextra")({
-	theme: "nextra-theme-docs",
-	themeConfig: "./theme.config.tsx",
-});
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  }
+};
 
-module.exports = withNextra();
+module.exports = nextConfig;

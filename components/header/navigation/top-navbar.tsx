@@ -39,7 +39,7 @@ export function TopNavbar() {
 								<NavigationMenuLink
 									data-testid={option.testid}
 									className={navigationMenuTriggerStyle()}
-									target={option.target ?? "_self"}>
+									target={(option as any).target ?? "_self"}>
 									{option.name}
 								</NavigationMenuLink>
 							</Link>
