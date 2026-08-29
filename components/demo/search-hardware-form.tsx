@@ -6,15 +6,70 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { mcpClient } from "@/lib/webmcp/mcp-client";
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export function SearchHardwareForm() {
   const [minRam, setMinRam] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [category, setCategory] = useState("single-board-computer");
+  const [isRunningDemo, setIsRunningDemo] = useState(false);
 
   const handleSearch = async () => {
-    // We will wire this to mcpClient later
-    console.log("Searching with", { minRam, maxPrice, category });
+    await mcpClient.executeTool("search_hardware", {
+      category,
+      min_ram: minRam ? Number(minRam) : undefined,
+      max_price: maxPrice ? Number(maxPrice) : undefined
+    });
+  };
+
+  const runAutomatedDemo = async () => {
+    setIsRunningDemo(true);
+    try {
+      // 1. Search Hardware
+      const products = await mcpClient.executeTool("search_hardware", { category: "single-board-computer", min_ram: 4, max_price: 200 });
+      await sleep(1500);
+
+      // 2. Evaluate Requirements
+      const evalResult = await mcpClient.executeTool("evaluate_requirements", {
+        specs: { min_ram: 8, required_interfaces: ["PCIe", "WiFi"] },
+        products
+      });
+      await sleep(1500);
+
+      const compatibleIds = evalResult.compatible.map((p: any) => p.id);
+
+      // 3. Compare Products
+      await mcpClient.executeTool("compare_products", {
+        productIds: compatibleIds
+      });
+      await sleep(1500);
+
+      // 4. Rank Candidates
+      const ranked = await mcpClient.executeTool("rank_candidates", {
+        products: evalResult.compatible,
+        priorities: { price: 2, ram: 1, ecosystem: 1, lead_time: 1 }
+      });
+      await sleep(1500);
+
+      if (ranked.length > 0) {
+        // 5. Create Procurement List
+        const list = await mcpClient.executeTool("create_procurement_list", {
+          name: "Project Alpha Hardware",
+          products: [{ productId: ranked[0].id, quantity: 10 }]
+        });
+        await sleep(1500);
+
+        // 6. Create RFQ
+        await mcpClient.executeTool("create_quote_request", {
+          listId: list.id
+        });
+      }
+
+    } finally {
+      setIsRunningDemo(false);
+    }
   };
 
   return (
@@ -54,7 +109,12 @@ export function SearchHardwareForm() {
           />
         </div>
       </div>
-      <Button onClick={handleSearch} className="w-full">Search Hardware</Button>
+      <div className="flex space-x-2">
+        <Button onClick={handleSearch} className="flex-1" variant="outline">Search Hardware</Button>
+        <Button onClick={runAutomatedDemo} className="flex-1 bg-purple-600 hover:bg-purple-700 text-white" disabled={isRunningDemo}>
+          {isRunningDemo ? "Running Demo..." : "Run Automated Demo (Agent Simulation)"}
+        </Button>
+      </div>
     </div>
   );
 }
