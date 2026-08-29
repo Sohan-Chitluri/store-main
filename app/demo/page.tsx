@@ -1,3 +1,8 @@
+import { SearchHardwareForm } from "@/components/demo/search-hardware-form";
+import { HardwareResultsTable } from "@/components/demo/hardware-results-table";
+import { EvaluationPanel } from "@/components/demo/evaluation-panel";
+import { ComparisonMatrix } from "@/components/demo/comparison-matrix";
+
 export default function DemoPage() {
   return (
     <div className="flex flex-col space-y-6 py-6">
@@ -10,36 +15,36 @@ export default function DemoPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-2 space-y-6">
-          <section id="search-section" className="border rounded-lg p-6">
+          <section id="search-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Hardware Search</h2>
-            <div className="text-sm text-muted-foreground italic">Search panel placeholder</div>
+            <SearchHardwareForm />
           </section>
 
-          <section id="results-section" className="border rounded-lg p-6">
+          <section id="results-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Candidates</h2>
-            <div className="text-sm text-muted-foreground italic">Results table placeholder</div>
+            <HardwareResultsTable />
           </section>
           
-          <section id="comparison-section" className="border rounded-lg p-6">
+          <section id="comparison-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Comparison Matrix</h2>
-            <div className="text-sm text-muted-foreground italic">Comparison matrix placeholder</div>
+            <ComparisonMatrix />
           </section>
         </div>
 
         <div className="space-y-6">
-          <section id="evaluation-section" className="border rounded-lg p-6">
+          <section id="evaluation-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Evaluation</h2>
-            <div className="text-sm text-muted-foreground italic">Evaluation panel placeholder</div>
+            <EvaluationPanel />
           </section>
 
-          <section id="procurement-section" className="border rounded-lg p-6">
+          <section id="procurement-section" className="border rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Procurement List</h2>
             <div className="text-sm text-muted-foreground italic">Procurement sidebar placeholder</div>
           </section>
         </div>
       </div>
 
-      <section id="trace-panel-section" className="border rounded-lg p-6 bg-slate-50 dark:bg-slate-900 mt-8">
+      <section id="trace-panel-section" className="border rounded-lg p-6 bg-slate-50 dark:bg-slate-900 mt-8 shadow-sm">
         <h2 className="text-xl font-semibold mb-4">WebMCP Trace</h2>
         <div className="text-sm text-muted-foreground italic">Trace panel placeholder</div>
       </section>
