@@ -7,7 +7,7 @@ const publicRoutesRegExp = new RegExp(`^(?!\/(${privateRoutes.join("|")})).*$`);
 
 export default authMiddleware({
 	// Public routes are routes that don't require authentication
-	publicRoutes: [publicRoutesRegExp],
+	publicRoutes: [publicRoutesRegExp, "/demo", "/api/(.*)"],
 	afterAuth(auth, req) {
 		// redirect to login who aren't authenticated
 		if (!auth.userId && !auth.isPublicRoute) {
