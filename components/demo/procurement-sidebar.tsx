@@ -34,7 +34,17 @@ export function ProcurementSidebar() {
         </div>
       </div>
 
-      {rfq && (
+      {!rfq ? (
+        <button 
+          onClick={async () => {
+            const { mcpClient } = await import("@/lib/webmcp/mcp-client");
+            mcpClient.executeTool("create_quote_request", { listId: list.id }).catch(console.error);
+          }}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors"
+        >
+          Generate RFQ
+        </button>
+      ) : (
         <div className="bg-slate-50 dark:bg-slate-900 border rounded p-4">
           <h4 className="font-semibold text-sm mb-2 text-green-600 dark:text-green-400">RFQ Draft Created</h4>
           <p className="text-xs text-muted-foreground whitespace-pre-wrap">{rfq.draftText}</p>
