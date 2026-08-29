@@ -9,12 +9,19 @@ import {
 	type TypedUseSelectorHook,
 } from "react-redux";
 
+import hardwareReducer from "@/lib/redux/reducers/hardware-slice";
+import procurementReducer from "@/lib/redux/reducers/procurement-slice";
+import tracePanelReducer from "@/lib/redux/reducers/trace-panel-slice";
+
 export const reduxStore = configureStore({
 	reducer: {
 		rigidPcb: rigidPcbReducer,
 		flexPcb: flexPcbReducer,
 		pcbAssembly: pcbAssemblyReducer,
 		address: addressReducer,
+		hardware: hardwareReducer,
+		procurement: procurementReducer,
+		tracePanel: tracePanelReducer,
 	},
 
 	devTools: process.env.NODE_ENV === "development",
