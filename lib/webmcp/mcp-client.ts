@@ -66,20 +66,31 @@ export class MCPClient {
   }
 }
 
-import { searchHardwareSchema, evaluateRequirementsSchema, compareProductsSchema, rankCandidatesSchema, createProcurementListSchema, createQuoteRequestSchema } from "./mcp-schemas";
+import { searchHardwareSchema, evaluateRequirementsSchema, compareProductsSchema, rankCandidatesSchema, createProcurementListSchema, createQuoteRequestSchema, analyzeProjectSchema } from "./mcp-schemas";
 import { searchHardwareAction } from "@/lib/server-actions/search-hardware-action";
+import { analyzeProjectAction } from "@/lib/server-actions/analyze-project-action";
 import { evaluateRequirementsAction } from "@/lib/server-actions/evaluate-requirements-action";
 import { compareProductsAction } from "@/lib/server-actions/compare-products-action";
 import { rankCandidatesAction } from "@/lib/server-actions/rank-candidates-action";
 import { createProcurementListAction } from "@/lib/server-actions/create-procurement-list-action";
 import { createQuoteRequestAction } from "@/lib/server-actions/create-quote-request-action";
 import { reduxStore } from "@/lib/redux/store";
-import { setProducts, setEvaluation, setComparison, setPriorities } from "@/lib/redux/reducers/hardware-slice";
+import { setProducts, setEvaluation, setComparison, setPriorities, setProjectContext } from "@/lib/redux/reducers/hardware-slice";
 import { setProcurementList, setRFQ } from "@/lib/redux/reducers/procurement-slice";
 import { addTraceEntry, updateTraceEntry } from "@/lib/redux/reducers/trace-panel-slice";
 
 export const mcpClient = new MCPClient({
   tools: [
+    {
+      name: "analyze_project",
+      description: "Analyze natural language project description",
+      inputSchema: analyzeProjectSchema,
+      handler: async (args: any) => {
+        const result = await analyzeProjectAction(args.description);
+        reduxStore.dispatch(setProjectContext(result.context));
+        return result;
+      }
+    },
     {
       name: "search_hardware",
       description: "Search for hardware products",

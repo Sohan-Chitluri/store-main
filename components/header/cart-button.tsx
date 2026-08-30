@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export async function CartButton() {
-	const cartItems = await fetchCartSizeAction();
+	const cartItems = await fetchCartSizeAction().catch(() => 0);
 	return (
 		<Button
 			data-testid="cart-button"

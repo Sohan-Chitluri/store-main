@@ -7,6 +7,14 @@ export const searchHardwareSchema = {
   }
 };
 
+export const analyzeProjectSchema = {
+  type: "object",
+  properties: {
+    description: { type: "string", description: "Natural language description of the project" }
+  },
+  required: ["description"]
+};
+
 export const evaluateRequirementsSchema = {
   type: "object",
   properties: {

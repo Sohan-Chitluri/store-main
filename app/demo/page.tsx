@@ -4,6 +4,7 @@ import { EvaluationPanel } from "@/components/demo/evaluation-panel";
 import { ComparisonMatrix } from "@/components/demo/comparison-matrix";
 import { TracePanel } from "@/components/demo/trace-panel";
 import { ProcurementSidebar } from "@/components/demo/procurement-sidebar";
+import { ProjectDiscoveryPanel } from "@/components/demo/project-discovery-panel";
 
 export default function DemoPage() {
   return (
@@ -13,6 +14,10 @@ export default function DemoPage() {
         <p className="text-muted-foreground">
           Engineering procurement workspace powered by WebMCP.
         </p>
+      </div>
+
+      <div className="mb-4">
+        <ProjectDiscoveryPanel />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

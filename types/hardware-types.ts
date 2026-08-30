@@ -19,6 +19,17 @@ export interface RequirementsType {
   category?: string;
 }
 
+export interface InferredNeedType {
+  property: string;
+  reason: string;
+  type: "hard" | "soft";
+}
+
+export interface ProjectContextType {
+  summary: string;
+  needs: InferredNeedType[];
+}
+
 export interface EvaluationResultType {
   compatible: HardwareProductType[];
   rejected: { product: HardwareProductType; reason: string }[];
