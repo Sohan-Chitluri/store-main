@@ -137,7 +137,11 @@ export const mcpClient = new MCPClient({
       description: "Create a draft request for quote",
       inputSchema: createQuoteRequestSchema,
       handler: async (args: any) => {
-        const result = await createQuoteRequestAction(args.listId);
+        const state = reduxStore.getState();
+        const listData = state.procurement.list;
+        const passedListData = (listData && listData.id === args.listId) ? listData : undefined;
+        
+        const result = await createQuoteRequestAction(args.listId, passedListData);
         reduxStore.dispatch(setRFQ(result));
         return result;
       }
