@@ -56,7 +56,7 @@ export function SearchHardwareForm() {
       // HUMAN INTERVENTION
       const reranked = await mcpClient.executeTool("rank_candidates", {
         products: evalResult.compatible,
-        priorities: { ecosystem: 3, ram: 2, price: 1, lead_time: 1 }
+        priorities: { ecosystem: 10, price: 10, ram: 0, lead_time: 1 }
       });
       await sleep(1500);
 
