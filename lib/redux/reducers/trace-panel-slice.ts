@@ -3,8 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface TraceEntry {
   id: string;
   toolName: string;
-  args: any;
-  result?: any;
+  args: unknown;
+  result?: unknown;
   status: "pending" | "success" | "error";
   duration?: number;
   timestamp: number;

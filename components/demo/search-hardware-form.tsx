@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { mcpClient } from "@/lib/webmcp/mcp-client";
+import type { HardwareProductType, EvaluationResultType, ProcurementListType } from "@/types/hardware-types";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,17 +28,17 @@ export function SearchHardwareForm() {
     setIsRunningDemo(true);
     try {
       // 1. Search Hardware
-      const products = await mcpClient.executeTool("search_hardware", { category: "single-board-computer", min_ram: 4, max_price: 200 });
+      const products = await mcpClient.executeTool("search_hardware", { category: "single-board-computer", min_ram: 4, max_price: 200 }) as HardwareProductType[];
       await sleep(1500);
 
       // 2. Evaluate Requirements
       const evalResult = await mcpClient.executeTool("evaluate_requirements", {
         specs: { min_ram: 8, required_interfaces: ["PCIe", "WiFi"] },
         products
-      });
+      }) as EvaluationResultType;
       await sleep(1500);
 
-      const compatibleIds = evalResult.compatible.map((p: any) => p.id);
+      const compatibleIds = evalResult.compatible.map((p) => p.id);
 
       // 3. Compare Products
       await mcpClient.executeTool("compare_products", {
@@ -47,7 +47,7 @@ export function SearchHardwareForm() {
       await sleep(1500);
 
       // 4. Rank Candidates
-      const ranked = await mcpClient.executeTool("rank_candidates", {
+      await mcpClient.executeTool("rank_candidates", {
         products: evalResult.compatible,
         priorities: { price: 3, ram: 1, ecosystem: 1, lead_time: 2 }
       });
@@ -57,7 +57,7 @@ export function SearchHardwareForm() {
       const reranked = await mcpClient.executeTool("rank_candidates", {
         products: evalResult.compatible,
         priorities: { ecosystem: 10, price: 10, ram: 0, lead_time: 1 }
-      });
+      }) as HardwareProductType[];
       await sleep(1500);
 
       if (reranked.length > 0) {
@@ -65,7 +65,7 @@ export function SearchHardwareForm() {
         const list = await mcpClient.executeTool("create_procurement_list", {
           name: "Project Alpha Hardware",
           products: [{ productId: reranked[0].id, quantity: 10 }]
-        });
+        }) as ProcurementListType;
         await sleep(1500);
 
         // 6. Create RFQ

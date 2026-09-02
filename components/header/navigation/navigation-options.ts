@@ -1,7 +1,16 @@
 import { Icons } from "@/components/ui/icons";
 import { HOME_PAGE } from "@/lib/constants/page-routes";
 
-export const navigationOptions = [
+export interface NavigationOption {
+	id: number;
+	name: string;
+	href: string;
+	icon: typeof Icons.BsCpu;
+	testid: string;
+	target?: "_self" | "_blank";
+}
+
+export const navigationOptions: NavigationOption[] = [
 	{
 		id: 1,
 		name: "Home",

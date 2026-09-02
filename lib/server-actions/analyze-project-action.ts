@@ -15,7 +15,7 @@ export async function analyzeProjectAction(description: string): Promise<Analyze
   const needs: InferredNeedType[] = [];
   const query: AnalyzeProjectResult["query"] = { category: "single-board-computer" };
   const specs: AnalyzeProjectResult["specs"] = { required_interfaces: [] };
-  let priorities = { price: 1, ram: 1, ecosystem: 1, lead_time: 1 };
+  const priorities = { price: 1, ram: 1, ecosystem: 1, lead_time: 1 };
 
   if (lowerDesc.includes("ros") || lowerDesc.includes("ros2") || lowerDesc.includes("ros 2")) {
     needs.push({
@@ -32,7 +32,7 @@ export async function analyzeProjectAction(description: string): Promise<Analyze
       reason: "Inferred because your project mentions camera-based perception.",
       type: "soft"
     });
-    specs.required_interfaces!.push("CSI");
+    specs.required_interfaces?.push("CSI");
   }
 
   if (lowerDesc.includes("computer vision") || lowerDesc.includes("performance") || lowerDesc.includes("ml") || lowerDesc.includes("ai")) {

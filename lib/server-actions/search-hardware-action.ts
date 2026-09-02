@@ -13,11 +13,13 @@ export async function searchHardwareAction(query: { min_ram?: number; max_price?
   }
   
   if (query.min_ram !== undefined) {
-    candidates = candidates.filter(p => p.ram >= query.min_ram!);
+    const minRam = query.min_ram;
+    candidates = candidates.filter(p => p.ram >= minRam);
   }
 
   if (query.max_price !== undefined) {
-    candidates = candidates.filter(p => p.price <= query.max_price!);
+    const maxPrice = query.max_price;
+    candidates = candidates.filter(p => p.price <= maxPrice);
   }
 
   return candidates;

@@ -6,8 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { mcpClient } from "@/lib/webmcp/mcp-client";
 import { ProjectContextPanel } from "./project-context-panel";
 import { useSelector } from "react-redux";
-import { ReduxState } from "@/lib/redux/store";
+import type { ReduxState } from "@/lib/redux/store";
 import { Bot, Sparkles } from "lucide-react";
+import type { AnalyzeProjectResult } from "@/lib/server-actions/analyze-project-action";
+import type { HardwareProductType, EvaluationResultType } from "@/types/hardware-types";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -22,11 +24,11 @@ export function ProjectDiscoveryPanel() {
     setIsAnalyzing(true);
     try {
       // 1. Analyze Project Context
-      const result = await mcpClient.executeTool("analyze_project", { description });
+      const result = await mcpClient.executeTool("analyze_project", { description }) as AnalyzeProjectResult;
       await sleep(1000); // Visual pause for the trace panel
 
       // 2. Search Hardware based on inferred explicit constraints
-      const products = await mcpClient.executeTool("search_hardware", result.query);
+      const products = await mcpClient.executeTool("search_hardware", result.query) as HardwareProductType[];
       await sleep(1000);
 
       if (products.length === 0) return;
@@ -35,11 +37,11 @@ export function ProjectDiscoveryPanel() {
       const evalResult = await mcpClient.executeTool("evaluate_requirements", {
         specs: result.specs,
         products
-      });
+      }) as EvaluationResultType;
       await sleep(1000);
 
       // 4. Compare Products
-      const compatibleIds = evalResult.compatible.map((p: any) => p.id);
+      const compatibleIds = evalResult.compatible.map((p) => p.id);
       if (compatibleIds.length > 0) {
         await mcpClient.executeTool("compare_products", {
           productIds: compatibleIds
@@ -66,7 +68,7 @@ export function ProjectDiscoveryPanel() {
           <h2 className="text-xl font-bold">Describe your project</h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          Tell us what you're building in plain English. We'll extract your engineering requirements and find the best hardware for your use case.
+          Tell us what you&apos;re building in plain English. We&apos;ll extract your engineering requirements and find the best hardware for your use case.
         </p>
         <Textarea 
           placeholder="e.g., I'm building a small autonomous rover. It'll have a camera, run ROS 2, probably do some computer vision, and I want to keep it reasonably cheap..."
